@@ -3,12 +3,15 @@ import { join } from "node:path";
 
 const botDir = process.env.MAKEFUN_BOT_DIR || "/bot";
 const outputDir = process.env.MAKEFUN_OUTPUT_DIR || "/output";
+const sourceFile = join(botDir, "VIDEO.json");
+const destFile = join(outputDir, "VIDEO.json");
 
 try {
-  mkdirSync(outputDir, { recursive: true });
-  copyFileSync(join(botDir, "VIDEO.json"), join(outputDir, "VIDEO.json"));
-} catch (error) {
-  const detail = error instanceof Error ? error.message : String(error);
-  console.error(`Failed to copy VIDEO.json from ${botDir} to ${outputDir}: ${detail}`);
-  process.exit(1);
+  const makeDirs = { recursive: true };
+  mkdirSync(outputDir, makeDirs);
+  copyFileSync(sourceFile, destFile);
+} catch (caught) {
+  const detail = caught instanceof Error ? caught.message : String(caught);
+  console.error(`Could not place VIDEO.json into ${outputDir}: ${detail}`);
+  throw new Error(detail);
 }
